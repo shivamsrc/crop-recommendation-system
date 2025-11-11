@@ -119,6 +119,7 @@ const CropForm = ({ onPredict }) => {
 // ─────────────────────────────────────────────
 const YieldForm = ({ onPredict }) => {
   const [f, setF] = useState({
+    Crop: "",
     State: "",
     Area: "",
     Annual_Rainfall: "",

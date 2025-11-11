@@ -5,8 +5,8 @@ import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
-from math import sqrt
 from sklearn.preprocessing import LabelEncoder
+from math import sqrt
 import os
 
 # Create models folder if it doesn't exist
@@ -23,16 +23,21 @@ if 'Production' in df.columns and 'Area' in df.columns:
     df = df[df['Area'] > 0].copy()
     df['yield'] = df['Production'] / df['Area']
 
-# Encode 'State'
+# Encode 'State' if available
 le_state = None
 if 'State' in df.columns:
     le_state = LabelEncoder()
     df['State_encoded'] = le_state.fit_transform(df['State'])
     print(f"Encoded {len(le_state.classes_)} states.")
-else:
-    print("No 'State' column found, skipping encoding.")
 
-# Choose numeric input features (excluding target and irrelevant ones)
+# Encode 'Crop' if available
+le_crop = None
+if 'Crop' in df.columns:
+    le_crop = LabelEncoder()
+    df['Crop_encoded'] = le_crop.fit_transform(df['Crop'])
+    print(f"Encoded {len(le_crop.classes_)} crops.")
+
+# Choose numeric features (exclude irrelevant or target columns)
 numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
 feature_cols = [
     c for c in numeric_cols 
@@ -40,31 +45,32 @@ feature_cols = [
 ]
 print("Using features:", feature_cols)
 
-# Prepare training data
+# Prepare data
 X = df[feature_cols]
 y = df['yield']
 
 # Split data
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Train model
+# Train smaller RandomForest model for Render memory
 model = RandomForestRegressor(
-    n_estimators=50,      # fewer trees → smaller model
-    max_depth=10,         # shallower trees → less memory
+    n_estimators=50,  # smaller model
+    max_depth=10,
     random_state=42
 )
 model.fit(X_train, y_train)
 
-# Evaluate model
+# Evaluate
 pred = model.predict(X_test)
 rmse = sqrt(mean_squared_error(y_test, pred))
 print("RMSE:", rmse)
 
-# Save model + features + label encoder
+# Save model, features, and encoders
 joblib.dump({
     'model': model,
     'features': feature_cols,
-    'label_encoder_state': le_state
+    'label_encoder_state': le_state,
+    'label_encoder_crop': le_crop
 }, "../models/model_yield.joblib")
 
-print("Saved ../models/model_yield.joblib")
+print("✅ Saved ../models/model_yield.joblib")
