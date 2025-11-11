@@ -11,6 +11,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
 // ─────────────────────────────────────────────
 // 🧭 Sidebar Component
 // ─────────────────────────────────────────────
@@ -271,8 +273,8 @@ export default function Dashboard() {
     try {
       const endpoint =
         type === "crop"
-          ? "http://127.0.0.1:5001/predict/crop"
-          : "http://127.0.0.1:5001/predict/yield";
+          ? `${API_BASE}/predict/crop`
+          : `${API_BASE}/predict/yield`;
 
       const res = await fetch(endpoint, {
         method: "POST",
