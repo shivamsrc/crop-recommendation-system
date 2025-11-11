@@ -30,5 +30,6 @@ pred = model.predict(X_test)
 print("Accuracy:", accuracy_score(y_test, pred))
 print(classification_report(y_test, pred, target_names=le.classes_))
 
-joblib.dump({'model': model, 'label_encoder': le}, 'models/model_crop.joblib')
+joblib.dump({'model': model, 'label_encoder': le}, "../models/model_crop.joblib", compress=3, protocol=4)
+
 print("Saved models/model_crop.joblib")

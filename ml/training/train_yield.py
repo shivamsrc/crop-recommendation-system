@@ -69,8 +69,7 @@ print("RMSE:", rmse)
 joblib.dump({
     'model': model,
     'features': feature_cols,
-    'label_encoder_state': le_state,
-    'label_encoder_crop': le_crop
-}, "../models/model_yield.joblib")
+    'label_encoder_state': le_state
+}, "../models/model_yield.joblib", compress=3, protocol=4)
 
 print("✅ Saved ../models/model_yield.joblib")
