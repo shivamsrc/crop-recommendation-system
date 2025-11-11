@@ -1,5 +1,4 @@
 .venv
-ml/models/*.joblib
 client/.env
 
 # Logs
